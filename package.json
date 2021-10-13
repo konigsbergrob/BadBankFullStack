@@ -1,0 +1,18 @@
+{
+  "name": "banking_application",
+  "version": "1.0.0",
+  "description": "banking_application using MERN stack",
+
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "konigsbergrobert@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.17.1",
+    "firebase": "^9.1.2",
+    "lowdb": "^1.0.0",
+    "mongodb": "^3.7.2"
+  }
+}
