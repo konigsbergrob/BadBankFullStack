@@ -1,0 +1,97 @@
+function Withdraw(){
+  const [show, setShow]     = React.useState(true);
+  const [status, setStatus] = React.useState(''); 
+  const [balance, setBalance] = React.useState(); 
+
+
+  return (
+    <Card
+      bgcolor="secondary"
+      header="Please use this form in order to WITHDRAW money from your account."
+      status={status}
+      body={show ? 
+        <WithdrawForm setShow={setShow} setStatus={setStatus}/> :
+        <WithdrawMsg setShow={setShow} setStatus={setStatus}/>
+        }
+    />
+  )
+}
+
+function WithdrawMsg(props){
+  return(<>
+    <h5>Success</h5>
+    <button type="submit" 
+      className="btn btn-light" 
+      onClick={() => {
+        props.setShow(true);
+        props.setStatus('');
+      }}>
+        Withdraw again
+    </button>
+  </>);
+}
+
+function WithdrawForm(props){
+  const [email, setEmail]   = React.useState('');
+  const [amount, setAmount] = React.useState('');
+  
+  function handle(){
+    fetch(`/account/findOne/${email}`)
+      .then(response => response.text())
+      .then(text => {
+          try {
+            const data = JSON.parse(text);
+            console.log(amount)
+            console.log(data.balance)
+            console.log(amount<data.balance)
+              if (amount<data.balance){
+              fetch(`/account/update/${email}/-${amount}`)
+              .then(response => response.text())
+              .then(text => {
+                  try {
+                      const data = JSON.parse(text);
+                      props.setStatus(JSON.stringify(data.value));
+                      props.setShow(false);
+                      console.log('JSON:', data);
+                  } catch(err) {
+                      props.setStatus('Deposit failed')
+                      console.log('err:', text);
+                  }
+              });}
+              else {
+                props.setShow(false)
+                props.setStatus("You don't have adequate funds for this withdrawl. Short by: $" + (amount-data.balance))}
+              console.log('JSON:', data);    
+          } catch(err) {
+              console.log('err:', text);
+          }
+      });
+    
+  }
+
+
+  return(<>
+
+    Email<br/>
+    <input type="input" 
+      className="form-control" 
+      placeholder="Enter email" 
+      value={email} 
+      onChange={e => setEmail(e.currentTarget.value)}/><br/>
+
+    Amount<br/>
+    <input type="number" 
+      className="form-control" 
+      placeholder="Enter amount" 
+      value={amount} 
+      onChange={e => setAmount(e.currentTarget.value)}/><br/>
+      
+
+    <button type="submit" 
+      className="btn btn-light" 
+      onClick={handle}>
+        Withdraw
+    </button>
+
+  </>);
+}
